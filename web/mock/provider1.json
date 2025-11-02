@@ -1,0 +1,22 @@
+[
+  {
+    "id": "p1-1",
+    "title": "Istanbul travel vlog",
+    "type": "video",
+    "views": 12500,
+    "likes": 730,
+    "reactions": 0,
+    "reading_time_min": 0,
+    "published_at": "2025-10-15T12:00:00Z"
+  },
+  {
+    "id": "p1-2",
+    "title": "Best cafes to work in Kadikoy",
+    "type": "text",
+    "views": 0,
+    "likes": 0,
+    "reactions": 44,
+    "reading_time_min": 6,
+    "published_at": "2025-09-20T10:30:00Z"
+  }
+]

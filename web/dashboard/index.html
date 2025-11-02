@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Search Dashboard</title>
+  <style>
+    body { font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial; margin: 24px; }
+    .row { display: flex; gap: 8px; align-items: center; margin-bottom: 12px; }
+    input, select, button { padding: 8px 10px; }
+    table { border-collapse: collapse; width: 100%; margin-top: 12px; }
+    th, td { text-align: left; padding: 8px; border-bottom: 1px solid #eee; }
+    th { font-size: 12px; text-transform: uppercase; letter-spacing: .08em; color: #666; }
+    .score { font-variant-numeric: tabular-nums; }
+    .muted { color: #666; font-size: 12px; }
+  </style>
+</head>
+<body>
+  <h2>Search Dashboard</h2>
+  <div class="row">
+    <input id="q" placeholder="query (e.g., istanbul)" />
+    <select id="type">
+      <option value="">type: any</option>
+      <option value="video">video</option>
+      <option value="text">text</option>
+    </select>
+    <select id="sort">
+      <option value="popularity">sort: popularity</option>
+      <option value="relevance">sort: relevance</option>
+    </select>
+    <button id="run">Search</button>
+  </div>
+  <div class="muted">Using local mock providers. Set PROVIDER*_URL envs to real endpoints when ready.</div>
+  <table>
+    <thead>
+      <tr><th>Title</th><th>Type</th><th>Score</th><th>Provider</th><th>Published</th></tr>
+    </thead>
+    <tbody id="rows"></tbody>
+  </table>
+  <script>
+    const rows = document.getElementById('rows');
+    const q = document.getElementById('q');
+    const typeSel = document.getElementById('type');
+    const sortSel = document.getElementById('sort');
+    const run = document.getElementById('run');
+
+    async function search(page=1, size=20) {
+      const params = new URLSearchParams();
+      params.set('query', q.value || 'istanbul');
+      if (typeSel.value) params.set('type', typeSel.value);
+      if (sortSel.value) params.set('sort', sortSel.value);
+      params.set('page', page); params.set('size', size);
+      const res = await fetch('/search?' + params.toString());
+      const data = await res.json();
+      rows.innerHTML = '';
+      (data.items || []).forEach(it => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `<td>${it.title}</td>
+                        <td>${it.type}</td>
+                        <td class="score">${(it.score??0).toFixed(2)}</td>
+                        <td>${it.provider}</td>
+                        <td>${it.published_at||''}</td>`;
+        rows.appendChild(tr);
+      });
+    }
+    run.addEventListener('click', () => search());
+    search();
+  </script>
+</body>
+</html>
